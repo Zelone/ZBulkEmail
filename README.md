@@ -7,7 +7,7 @@ Sending Bulk Emails That do not go in spam. Last tested on  26thAug2020
 ## Requirements:
 * An speedy internet connection.
 * An Mail account(preffered gmail). 
-* Allow third party to login you need to switch it on in the email(will show later how to).
+* Allow third party to login you need to switch it on in the email.
 * To be of sane mind not to send spam.
 * Follow the sequence to use it.
 
