@@ -9,7 +9,7 @@ Sending Bulk Emails That do not go in spam. Last tested on  26thAug2020
 * An Mail account(preffered gmail). 
 * Allow third party to login you need to switch it on in the email.
 * To be of sane mind not to send spam.
-* Follow the sequence to use it.
+* java 8
 
 Please note: Netbeans IDE is used to edit the code
 
@@ -17,14 +17,14 @@ Please note: Netbeans IDE is used to edit the code
 
 
 * Write the email to be sent  
-* send it to yourself with the subject "CODEE" \<Case sensitive\>
-* Open the CARL.java file in src/carl 
-* Edit to add ID and Password of your email
-* Edit the subject line in the main function at line 57
-* Build the Jar file
-* Create the file "Book.id" \<Case sensitive\> in the dist folder \< Netbeans jar files go to dist folder after being built with the lib files\>
+* send it to yourself(-u user , -p password) with a dummy subject (-si Subject input) example "CODEE" 
+* Run jar file with -h argument and follow the commnd.
+* Create the file (-f filename) "Book.id" \<Case sensitive\> in the dist folder \< Netbeans jar files go to dist folder after being built with the lib files\>
 * Reciever Email ids are to be written in a file using new line as delimiter. 
-* Run the Jar file
+* Reciever Subject Line (-so subject output) is to be written in the argument
+* Run the Jar file with arguments 
+        -u "username@gmail.com" -p "password" -si "CODEE" -so "Invitation to CARL lab workshop ."
+* Optional argument -f "Book.id"
 
 
 ## External jar used:

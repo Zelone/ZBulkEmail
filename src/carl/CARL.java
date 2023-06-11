@@ -5,15 +5,13 @@
  */
 package carl;
 
-import static carl.SendAttachment.sendMail;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -29,48 +27,114 @@ import javax.mail.internet.MimeMultipart;
  *
  * @author Jitesh Jhawar aka Zelone
  */
-public class CARL
-{
+public class CARL {
 
-    private static final String user = "carlabsrm@gmail.com";
-    private static final String password = "Passabc1234";
     private static final String googlehost = "smtp.gmail.com";
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
+        String user = "carlabsrm@gmail.com";
+        String password = "Passabc1234";
+        String subjectinemail = "CODEE";
+        String subject = "Invitation for CARL ExploreML Workshop";
+        String filename = "Book.id";
         ArrayList<String> to = new ArrayList<String>();
         int i = -1;
         FileInputStream fos;
+        if (args.length == 0) {
+            helpoutput(filename);
+            System.exit(0);
+        }
         try {
-            fos = new FileInputStream(new File("Book.id"));
+
+            int j = 0;
+            boolean u = false, p = false, si = false, so = false;
+
+            for (String arg : args) {
+                ++j;
+                if (arg.equalsIgnoreCase("-h")) {
+                    helpoutput(filename);
+                } else if (arg.equalsIgnoreCase("-u")) {
+                    user = args[j];
+                    u = true;
+                    System.out.println("Found user:" + user);
+                } else if (arg.equalsIgnoreCase("-p")) {
+                    password = args[j];
+                    p = true;
+                    System.out.println("Found password: ****(secret)");
+                } else if (arg.equalsIgnoreCase("-si")) {
+                    subjectinemail = args[j];
+                    si = true;
+                    System.out.println("Found subject to search:" + subjectinemail);
+                } else if (arg.equalsIgnoreCase("-so")) {
+                    subject = args[j];
+                    so = true;
+                    System.out.println("Found subject for bulk email:" + subject);
+                } else if (arg.equalsIgnoreCase("-f")) {
+                    filename = args[j];
+                    System.out.println("Found file:" + filename);
+                }
+            }
+            fos = new FileInputStream(new File(filename));
             Scanner sc = new Scanner(fos);
+            if (!u || !p || !si || !so) {
+                System.out.print("\n ERROR: ");
+                if (!u) {
+                    System.out.print(" userid ");
+                }
+                if (!p) {
+                    System.out.print(" password ");
+                }
+                if (!si) {
+                    System.out.print(" subject to search ");
+                }
+                if (!so) {
+                    System.out.print(" subject for bulk email ");
+                }
+                System.out.print(" not found in console \n");
+                sc.close();
+                //helpoutput(filename);
+                System.exit(0);
+            }
+
             while (sc.hasNext()) {
                 to.add(sc.next().trim().toLowerCase());
                 i++;
-
             }
             sendMail(user,
                     password, to,
-                    "Invitation for CARL ExploreML Workshop",
-                    "CODEE", i + 1);
-
+                    subject,
+                    subjectinemail, i + 1);
+            sc.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(SendAttachment.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                FileOutputStream os = new FileOutputStream(new File(filename));
+                os.write("".getBytes());
+                os.close();
+            } catch (Exception ex1) {
+
+            }
+            System.out.println("ERROR : File :" + filename + " NOT FOUND (Now created a file to be edited)");
+
         }
         //SendAttachment.main(args);
         // TODO code application logic here
     }
-/**
- * 'MsgCode' is the subject of the message in `from`'s MAIL to be sent to List
-    'to' of 'toN' people with the Subject 'sub' by the account 'from' with password 'password'.
- *  
- * To Test To send mail with Attachments.  
- */
-    public static void sendMail(String from, String password, ArrayList<String> to, String sub, String msgCode, int toN)
-    {//STEP 1: set connection to the gmail servers.
+
+    private static void helpoutput(String filename) {
+        System.out.println("ARGUMENTS:\n -h : help\n -u : username\n -p : password\n -si : subject to search in inbox\n -so : subject to use for bulk messaging\n  all above ARGUMENT required\n -f : file name [DEFAULT:" + filename + "] {Will be created if not found }\n  the above argument not required as default is available\n\n please read README.md file for more information");
+    }
+
+    /**
+     * 'MsgCode' is the subject of the message in `from`'s MAIL to be sent to
+     * List 'to' of 'toN' people with the Subject 'sub' by the account 'from'
+     * with password 'password'.
+     *
+     * To Test To send mail with Attachments.
+     */
+    public static void sendMail(String from, String password, ArrayList<String> to, String sub, String msgCode, int toN) {//STEP 1: set connection to the gmail servers.
         try { //String host = "";
             //Get properties object    
             Properties props = new Properties();
@@ -80,11 +144,9 @@ public class CARL
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.port", "465");
             //get Session   
-            Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator()
-            {
+            Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
                 @Override
-                protected PasswordAuthentication getPasswordAuthentication()
-                {
+                protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(from, password);
                 }
             });
